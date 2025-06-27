@@ -98,7 +98,7 @@ This phase introduces the automated combat system, dungeon mechanics, and player
     * Simulate resource gains and potentially experience from auto-fights during the offline period.
     * Present an "offline gains" summary to the player upon resuming.
 
-#### Phase 3: Inventory & Equipment
+##### Phase 3: Inventory & Equipment
 
 This phase focuses on developing the item system, inventory management, and equipment functionality.
 
