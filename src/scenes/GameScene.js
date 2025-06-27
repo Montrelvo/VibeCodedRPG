@@ -71,6 +71,20 @@ class GameScene extends Phaser.Scene {
             this.player.allocateSkillPoint('strength');
             this.updateHUD();
         });
+
+        // Save Button
+        const saveButton = this.add.text(700, 130, 'Save Game', {
+            fontSize: '20px',
+            fill: '#fff',
+            backgroundColor: '#007bff'
+        })
+        .setPadding(5)
+        .setOrigin(0.5)
+        .setInteractive({ useHandCursor: true });
+
+        saveButton.on('pointerdown', () => {
+            this.saveGame();
+        });
     }
 
     update() {
