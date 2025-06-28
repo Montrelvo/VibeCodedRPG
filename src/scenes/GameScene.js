@@ -1,14 +1,14 @@
-import { Player } from '../player/Player.js';
-
 class GameScene extends Phaser.Scene {
     constructor() {
         super('GameScene');
-        this.player = new Player(); // Instantiate the Player class
         this.goldPerSecond = 1;
         this.manaPerSecond = 0.5;
     }
 
     create() {
+        // Access the global player instance from the registry
+        this.player = this.registry.get('player');
+
         // Add background
         this.add.image(400, 300, 'background').setDepth(0);
 
@@ -23,6 +23,8 @@ class GameScene extends Phaser.Scene {
         this.xpText = this.add.text(10, 130, `XP: ${this.player.getStats().xp}/${this.player.getStats().xpToNextLevel}`, { fontSize: '24px', fill: '#fff' });
         this.skillPointsText = this.add.text(10, 160, `Skill Points: ${this.player.getStats().skillPoints}`, { fontSize: '24px', fill: '#fff' });
 
+        // Update HUD initially with loaded data
+        this.updateHUD();
 
         // Idle Resource Generation
         this.time.addEvent({
@@ -38,9 +40,6 @@ class GameScene extends Phaser.Scene {
         // Placeholder for combat area
         this.add.rectangle(550, 400, 400, 300, 0x000000, 0.5).setDepth(0.5);
         this.add.text(550, 400, 'Combat Area (Coming Soon!)', { fontSize: '24px', fill: '#fff' }).setOrigin(0.5).setDepth(0.6);
-
-        // Save/Load System (initial check)
-        this.loadGame();
 
         // Temporary button to add XP for testing
         const addXpButton = this.add.text(700, 50, 'Add XP (Test)', {
@@ -108,25 +107,6 @@ class GameScene extends Phaser.Scene {
         };
         localStorage.setItem('idleRpgSave', JSON.stringify(gameState));
         console.log('Game Saved!');
-    }
-
-    loadGame() {
-        const savedData = localStorage.getItem('idleRpgSave');
-        if (savedData) {
-            const gameState = JSON.parse(savedData);
-            this.player.setStats(gameState.playerStats); // Set stats on Player instance
-
-            // Calculate offline progress
-            const lastPlayed = gameState.timestamp;
-            const now = Date.now();
-            const elapsedSeconds = (now - lastPlayed) / 1000;
-
-            this.player.getStats().gold += this.goldPerSecond * elapsedSeconds;
-            this.player.getStats().mana += this.manaPerSecond * elapsedSeconds;
-
-            console.log(`Game Loaded! Offline gains: ${Math.floor(this.goldPerSecond * elapsedSeconds)} gold, ${Math.floor(this.manaPerSecond * elapsedSeconds)} mana.`);
-            this.updateHUD();
-        }
     }
 }
 
