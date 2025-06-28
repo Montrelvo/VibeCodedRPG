@@ -27,8 +27,39 @@ class MainMenu extends Phaser.Scene {
             this.scene.start('GameScene');
         });
 
+        // Add Load Game button
+        const loadButton = this.add.text(400, 380, 'Load Game', {
+            fontSize: '32px',
+            fill: '#fff',
+            backgroundColor: '#888'
+        })
+        .setPadding(10)
+        .setOrigin(0.5)
+        .setInteractive({ useHandCursor: true });
+
+        loadButton.on('pointerdown', () => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.txt,.json'; // Accept .txt and .json files
+            fileInput.style.display = 'none'; // Hide the input element
+            document.body.appendChild(fileInput);
+
+            fileInput.onchange = (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    // Access the loadGameFromFile function and game instance from the scene's data
+                    const loadGameFromFile = this.sys.game.config.data.loadGameFromFile;
+                    const gameInstance = this.sys.game.config.data.gameInstance;
+                    loadGameFromFile(file, gameInstance);
+                }
+                document.body.removeChild(fileInput); // Clean up the input element
+            };
+
+            fileInput.click(); // Programmatically click the hidden input
+        });
+
         // Add Settings button (placeholder)
-        const settingsButton = this.add.text(400, 380, 'Settings', {
+        const settingsButton = this.add.text(400, 460, 'Settings', { // Adjusted Y position
             fontSize: '32px',
             fill: '#fff',
             backgroundColor: '#888'

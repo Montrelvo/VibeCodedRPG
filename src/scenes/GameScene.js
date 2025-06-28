@@ -105,8 +105,20 @@ class GameScene extends Phaser.Scene {
             playerStats: this.player.getStats(), // Get stats from Player instance
             timestamp: Date.now()
         };
-        localStorage.setItem('idleRpgSave', JSON.stringify(gameState));
-        console.log('Game Saved!');
+        const dataStr = JSON.stringify(gameState, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        const date = new Date();
+        const filename = `save_${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}_${date.getHours().toString().padStart(2, '0')}${date.getMinutes().toString().padStart(2, '0')}${date.getSeconds().toString().padStart(2, '0')}.txt`;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        console.log('Game Saved to file:', filename);
     }
 }
 

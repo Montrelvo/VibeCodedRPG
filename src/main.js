@@ -8,21 +8,35 @@ import { Player } from './player/Player.js';
 const player = new Player();
 
 // Function to load game state
-function loadGame() {
-    const savedData = localStorage.getItem('idleRpgSave');
-    if (savedData) {
-        const gameState = JSON.parse(savedData);
-        player.setStats(gameState.playerStats);
-        console.log('Game Loaded from main.js!');
-        console.log('Player stats after initial load in main.js:', player.getStats());
-    } else {
-        console.log('No saved game found. Starting new game.');
-    }
+function loadGameFromFile(file, gameInstance) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const gameState = JSON.parse(event.target.result);
+            gameInstance.registry.get('player').setStats(gameState.playerStats);
+            console.log('Game Loaded from file!');
+            console.log('Player stats after loading from file:', gameInstance.registry.get('player').getStats());
+            // Optionally, transition to GameScene after loading
+            if (gameInstance.scene.isActive('MainMenu')) {
+                gameInstance.scene.stop('MainMenu');
+                gameInstance.scene.start('GameScene');
+            }
+        } catch (e) {
+            console.error('Failed to parse game state from file:', e);
+            alert('Error loading game: Invalid save file.');
+        }
+    };
+    reader.onerror = (event) => {
+        console.error('Error reading file:', event.target.error);
+        alert('Error reading file.');
+    };
+    reader.readAsText(file);
 }
 
-// Load game state immediately when the application starts
-console.log('Player stats before initial load in main.js:', player.getStats());
-loadGame();
+// Expose loadGameFromFile to the global scope or game instance if needed by scenes
+// For now, we'll pass it directly to the MainMenu scene via data
+// The initial loadGame() using localStorage is removed as per instructions.
+// The game will now start with default stats unless a file is loaded via the button.
 
 
 const config = {
@@ -44,10 +58,12 @@ const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    // Pass the player instance to scenes
+    // Pass the player instance and loadGameFromFile function to scenes
     // This is a common way to share data between scenes in Phaser
     data: {
-        player: player
+        player: player,
+        loadGameFromFile: loadGameFromFile,
+        gameInstance: game // Pass the game instance itself for scene transitions
     }
 };
 
