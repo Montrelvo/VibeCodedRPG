@@ -62,8 +62,7 @@ const config = {
     // This is a common way to share data between scenes in Phaser
     data: {
         player: player,
-        loadGameFromFile: loadGameFromFile,
-        gameInstance: game // Pass the game instance itself for scene transitions
+        loadGameFromFile: loadGameFromFile
     }
 };
 
