@@ -61,8 +61,7 @@ const config = {
     // Pass the player instance and loadGameFromFile function to scenes
     // This is a common way to share data between scenes in Phaser
     data: {
-        player: player,
-        loadGameFromFile: loadGameFromFile
+        player: player
     }
 };
 
@@ -70,3 +69,5 @@ const game = new Phaser.Game(config);
 
 // Add the player instance to the game's global registry
 game.registry.set('player', player);
+game.registry.set('loadGameFromFile', loadGameFromFile);
+game.registry.set('gameInstance', game);

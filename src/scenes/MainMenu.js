@@ -48,8 +48,8 @@ class MainMenu extends Phaser.Scene {
                 const file = event.target.files[0];
                 if (file) {
                     // Access the loadGameFromFile function and game instance from the scene's data
-                    const loadGameFromFile = this.sys.game.config.data.loadGameFromFile;
-                    const gameInstance = this.sys.game.config.data.gameInstance;
+                    const loadGameFromFile = this.sys.game.registry.get('loadGameFromFile');
+                    const gameInstance = this.sys.game.registry.get('gameInstance');
                     loadGameFromFile(file, gameInstance);
                 }
                 document.body.removeChild(fileInput); // Clean up the input element
