@@ -2,6 +2,7 @@ import { Boot } from './scenes/Boot.js';
 import { Preload } from './scenes/Preload.js';
 import { MainMenu } from './scenes/MainMenu.js';
 import { GameScene } from './scenes/GameScene.js';
+import { InventoryScene } from './scenes/InventoryScene.js';
 import { Player } from './player/Player.js';
 
 // Create a global player instance
@@ -74,7 +75,8 @@ const config = {
         Boot,
         Preload,
         MainMenu,
-        GameScene
+        GameScene,
+        InventoryScene
     ],
     scale: {
         mode: Phaser.Scale.FIT,
