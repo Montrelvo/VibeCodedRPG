@@ -13,9 +13,31 @@ function loadGameFromFile(file, gameInstance) {
     reader.onload = (event) => {
         try {
             const gameState = JSON.parse(event.target.result);
+
+            // Validate loaded game state
+            if (!gameState.playerStats || typeof gameState.playerStats !== 'object') {
+                throw new Error('Invalid save file: Missing or invalid player stats');
+            }
+
+            // Validate required stats
+            const requiredStats = ['gold', 'mana', 'hp', 'maxHp', 'strength', 'intelligence', 'agility', 'level', 'xp', 'skillPoints'];
+            for (const stat of requiredStats) {
+                if (typeof gameState.playerStats[stat] !== 'number') {
+                    throw new Error(`Invalid save file: ${stat} must be a number`);
+                }
+            }
+
+            // Ensure stats are within valid ranges
+            gameState.playerStats.gold = Math.max(0, gameState.playerStats.gold);
+            gameState.playerStats.mana = Math.max(0, gameState.playerStats.mana);
+            gameState.playerStats.hp = Math.max(0, Math.min(gameState.playerStats.hp, gameState.playerStats.maxHp));
+            gameState.playerStats.level = Math.max(1, gameState.playerStats.level);
+            gameState.playerStats.skillPoints = Math.max(0, gameState.playerStats.skillPoints);
+
             gameInstance.registry.get('player').setStats(gameState.playerStats);
             console.log('Game Loaded from file!');
             console.log('Player stats after loading from file:', gameInstance.registry.get('player').getStats());
+
             // Optionally, transition to GameScene after loading
             if (gameInstance.scene.isActive('MainMenu')) {
                 gameInstance.scene.stop('MainMenu');
@@ -23,12 +45,12 @@ function loadGameFromFile(file, gameInstance) {
             }
         } catch (e) {
             console.error('Failed to parse game state from file:', e);
-            alert('Error loading game: Invalid save file.');
+            alert(`Error loading game: ${e.message}`);
         }
     };
     reader.onerror = (event) => {
         console.error('Error reading file:', event.target.error);
-        alert('Error reading file.');
+        alert('Error reading file. Please try again with a valid save file.');
     };
     reader.readAsText(file);
 }

@@ -64,6 +64,20 @@ class Player {
         Object.assign(this.stats, newStats);
         this.calculateXpToNextLevel(); // Recalculate XP to next level after loading
     }
+
+    // Method to add gold (for resource generation)
+    addGold(amount) {
+        this.stats.gold += amount;
+        if (this.stats.gold < 0) this.stats.gold = 0; // Prevent negative gold
+    }
+
+    // Method to add mana (for resource generation)
+    addMana(amount) {
+        this.stats.mana += amount;
+        if (this.stats.mana < 0) this.stats.mana = 0; // Prevent negative mana
+        // Cap mana at maxMana if needed
+        if (this.stats.mana > this.stats.maxMana) this.stats.mana = this.stats.maxMana;
+    }
 }
 
 export { Player };
